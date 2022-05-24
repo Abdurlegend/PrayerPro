@@ -1,29 +1,30 @@
 package com.example.prayerpro;
 
-public abstract class  Prayer {
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
-private String prayerName="";
-private double prayerTime=0;
+public class  Prayer {
+    private String prayerName;
+    private String prayerTime;  // STORE AT CALENDAR DATA TYPE IN FUTURE ITERATIONS
+
+    public Prayer(String prayerName, String prayerTime){
+        this.prayerName = prayerName;
+        this.prayerTime = prayerTime;
+    }
+
+    public String getPrayerName(){
+        return this.prayerName;
+    }
+
+    public String getPrayerTime(){
+        return this.prayerTime;
+    }
 
 
 
-
-    public abstract void callToPrayer();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //public abstract void callToPrayer();
 }
 
 
