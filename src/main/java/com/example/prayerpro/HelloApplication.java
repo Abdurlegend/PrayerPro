@@ -1,10 +1,12 @@
 package com.example.prayerpro;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -12,21 +14,11 @@ import javafx.stage.Stage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 
 public class HelloApplication extends Application {
-
-
-
-    private Scene scene1;
-    private HBox root;
-    //private Button btn1;
-
-
-    private VBox vbox;
-    //private Button btn2;
-
-
-
+    static ComboBox<String> SelectPrayer;
+    static TableView prayerlist;
 
     public void start(Stage primaryStage) throws IOException {
 
@@ -37,36 +29,28 @@ public class HelloApplication extends Application {
         primaryStage.setMinWidth(200);
         primaryStage.setResizable(false);
 
-        //Label Prayerpro = new Label("PrayerPro");
-        //btn1= new Button("prayer alert");
-        //btn1.setOnAction(e -> primaryStage.setScene(scene2));
+        Label Prayerpro = new Label("Welcome to Prayer Pro");
 
-        root = new HBox();
+
         VBox dropdownlist = new VBox();
-        ComboBox<String> SelectPrayer = new ComboBox<>();
-        SelectPrayer.getItems().addAll("Montreal" , "Toronto", "New York");
-        TextField userInput = new TextField();
-        dropdownlist.getChildren().add(SelectPrayer);
-        root.getChildren().addAll(dropdownlist);
+        SelectPrayer = new ComboBox<>();
+        Label citySelection = new Label("Choose a city");
+        SelectPrayer.getItems().addAll("Montreal" , "Toronto", "New york");
+        SelectPrayer.setValue("Montreal");
+        Button btn= new Button("Select a city");;
+        btn.setOnAction(e -> userCityControl.refresh());
+        dropdownlist.getChildren().addAll(SelectPrayer);
 
-        VBox Checkbox = new VBox();
+
+        HBox Checkbox = new HBox();
+        Label alertbox = new Label("Would you like to recieve daily notifications");
         CheckBox allowNotification = new CheckBox("Yes");
         CheckBox disallowNotification = new CheckBox("no");
         Checkbox.setAlignment(Pos.TOP_LEFT);
         Checkbox.getChildren().addAll(allowNotification, disallowNotification);
-        root.getChildren().add(Checkbox);
 
-
-        scene1= new Scene(root);
-
-
-
-
-
-        // creating second scene
-
-        vbox = new VBox();
-        TableView prayerlist = new TableView<>();
+        VBox vbox = new VBox();
+         prayerlist = new TableView<>();
 
 
         TableColumn<Prayer, String> column1 =
@@ -89,36 +73,43 @@ public class HelloApplication extends Application {
         prayerlist.getItems().addAll(PrayerSyncService.dailyPrayers);
         vbox.getChildren().addAll(prayerlist);
 
+        GridPane grid= new GridPane();
+        grid.add(dropdownlist, 1, 0);
+        grid.add(btn,2,0);
+        grid.add(Checkbox, 4, 0);
+        grid.add(vbox, 2,1);
+        grid.add(citySelection,0 ,0);
+        grid.add(alertbox,3,0);
 
+        // Setting Padding
+        grid.setPadding(new Insets(10, 10, 10, 10));
 
-        //scene2 = new Scene(vbox);
-        //btn2= new Button("list of 5 daily prayers and thier times");
-       // btn2.setOnAction(e -> primaryStage.setScene(scene1));
+        //Setting the vertical and horizontal gaps between the columns
+        grid.setVgap(5);
+        grid.setHgap(5);
 
-        root.getChildren().addAll(vbox);
+        //Setting the Grid alignment
+        grid.setAlignment(Pos.CENTER);
 
-
-
-
-        // SelectPrayer.promptTextProperty().bind(prayer.setUserCityControl());
-
-
-
-
-
-        primaryStage.setScene(scene1);
+        Scene scene= new Scene(grid);
+        primaryStage.setScene(scene);
         primaryStage.setTitle("Prayer Notification");
         primaryStage.show();
-
-
-
     }
 
-
-
     public static void main(String[] args) throws FileNotFoundException, ParseException {
-        PrayerSyncService.syncPrayersFromtextfile();
         launch(args);
+    }
+
+    public static String getSelectedCity(){
+        return SelectPrayer != null ? SelectPrayer.getValue() : "Montreal"; // DEFAULT VALUE IS MONTREAL
+    }
+
+    public static  void updatePrayerTimingsTable(List<Prayer> newTimings){
+        if(prayerlist != null){
+            prayerlist.getItems().clear();
+            prayerlist.getItems().addAll(PrayerSyncService.dailyPrayers);
+        }
     }
 
     /*private static void populatePrayerTimingsUI(Stage primaryStage){

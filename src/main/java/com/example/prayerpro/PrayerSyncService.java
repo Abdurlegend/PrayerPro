@@ -9,6 +9,7 @@ import java.util.*;
 public class PrayerSyncService {
     static List<Prayer> dailyPrayers = new ArrayList<Prayer>();
     public static void syncPrayersFromtextfile() throws FileNotFoundException, ParseException {
+        dailyPrayers =  new ArrayList<Prayer>();
         String filename = null;
         Boolean isCitySelected =
                 UserSettingManagement.getCitySelected() != null &&
@@ -24,8 +25,8 @@ public class PrayerSyncService {
 
         while(scanner.hasNextLine()){
             String prayersOfOneDay = scanner.nextLine();
-            String currentLineDate = prayersOfOneDay.substring(0, prayersOfOneDay.indexOf(" "));
             try{
+                String currentLineDate = prayersOfOneDay.substring(0, prayersOfOneDay.indexOf(" "));
                 Date lineDate = new SimpleDateFormat("dd/MM/yyyy").parse(currentLineDate);
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(lineDate);
@@ -34,11 +35,24 @@ public class PrayerSyncService {
                 if(datesMatch){
                     String[] data = prayersOfOneDay.split(" ");
 
-                    dailyPrayers.add(new Prayer("Fajr", data[4]));
-                    dailyPrayers.add(new Prayer("Duhr", data[10]));
-                    dailyPrayers.add(new Prayer("Asr", data[12]));
-                    dailyPrayers.add(new Prayer("Maghrib", data[14]));
-                    dailyPrayers.add(new Prayer("Isha", data[16]));
+
+
+                    if( UserSettingManagement.getCitySelected().equals("Newyork")){
+                        dailyPrayers.add(new Prayer("Fajr", data[2]));
+                        dailyPrayers.add(new Prayer("Duhr", data[3]));
+                        dailyPrayers.add(new Prayer("Asr", data[4]));
+                        dailyPrayers.add(new Prayer("Maghrib", data[5]));
+                        dailyPrayers.add(new Prayer("Isha", data[6]));
+                    }
+                    else{
+                        dailyPrayers.add(new Prayer("Fajr", data[4]));
+                        dailyPrayers.add(new Prayer("Duhr", data[10]));
+                        dailyPrayers.add(new Prayer("Asr", data[12]));
+                        dailyPrayers.add(new Prayer("Maghrib", data[14]));
+                        dailyPrayers.add(new Prayer("Isha", data[16]));
+                    }
+
+                    HelloApplication.updatePrayerTimingsTable(dailyPrayers);
                 }
 
 
