@@ -6,18 +6,22 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+
 public class PrayerSyncService {
-    static List<Prayer> dailyPrayers = new ArrayList<Prayer>();
+    public static List<Prayer> dailyPrayers = new ArrayList<Prayer>();
+
+    // This method is used for reading the files and getting the data from it
     public static void syncPrayersFromtextfile() throws FileNotFoundException, ParseException {
         dailyPrayers =  new ArrayList<Prayer>();
         String filename = null;
         Boolean isCitySelected =
-                UserSettingManagement.getCitySelected() != null &&
-                UserSettingManagement.getCitySelected().length() != 0;
+                UserSettingManagement.currentPreference.getCitySelected() != null &&
+                UserSettingManagement.currentPreference.getCitySelected().length() != 0;
         if(isCitySelected){
-            filename = UserSettingManagement.getCitySelected() + "Prayertimes.txt";
+            filename = UserSettingManagement.currentPreference.getCitySelected() + "Prayertimes.txt";
         }
 
+        // heere we are opening and reading the files
         File MtlPrayerTimes = new File("C:\\Users\\abdur\\IdeaProjects\\PrayerPro\\src\\main\\java\\prayerTimings\\" + filename);
         Scanner scanner = new Scanner(MtlPrayerTimes);
         Calendar today = Calendar.getInstance();
@@ -31,13 +35,14 @@ public class PrayerSyncService {
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(lineDate);
 
+
+                // we are setting a condtion to make sure that the date selected from the file matches with the current  date
                 Boolean datesMatch = today.get(Calendar.DAY_OF_MONTH) == cal.get(Calendar.DAY_OF_MONTH);    // WE ASSUME THE TEXT FILES WILL ALWAYS BE OF CURRENT MONTH
                 if(datesMatch){
                     String[] data = prayersOfOneDay.split(" ");
 
 
-
-                    if( UserSettingManagement.getCitySelected().equals("Newyork")){
+                    if( UserSettingManagement.currentPreference.getCitySelected().equals("Newyork")){
                         dailyPrayers.add(new Prayer("Fajr", data[2]));
                         dailyPrayers.add(new Prayer("Duhr", data[3]));
                         dailyPrayers.add(new Prayer("Asr", data[4]));
@@ -45,7 +50,7 @@ public class PrayerSyncService {
                         dailyPrayers.add(new Prayer("Isha", data[6]));
                     }
                     else{
-                        dailyPrayers.add(new Prayer("Fajr", data[4]));
+                        dailyPrayers.add(new MorningPrayer("Fajr", data[4]));
                         dailyPrayers.add(new Prayer("Duhr", data[10]));
                         dailyPrayers.add(new Prayer("Asr", data[12]));
                         dailyPrayers.add(new Prayer("Maghrib", data[14]));

@@ -1,10 +1,5 @@
 package com.example.prayerpro;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 public class  Prayer {
     private String prayerName;
     private String prayerTime;  // STORE AT CALENDAR DATA TYPE IN FUTURE ITERATIONS
@@ -22,7 +17,15 @@ public class  Prayer {
         return this.prayerTime;
     }
 
-
+    public static void callToPrayer(){
+        // IMPLEMENTATION CODED HERE - HOWEVER COMMENTED SINCE WE DONT HAVE LIBRARY INCLUDED
+        /*
+        String filename = "regularPrayer.mp3";
+        Media fileMedia = new Media(new File(filename).toURI().toString());
+        MediaPlayer mediaplayer = new MediaPlayer(fileMedia);
+        mediaplayer.play();
+         */
+    }
 
     //public abstract void callToPrayer();
 }

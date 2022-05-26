@@ -1,0 +1,17 @@
+
+.Button{
+          -fx-background-color: green;
+          -fx-pref-width: 100px;
+}
+
+.label{
+    -fx-text-fill: black;
+    -fx-text-alignment: Center;
+}
+
+.prayerList-column{
+    -fx-cell-size:5em;
+
+
+}
+

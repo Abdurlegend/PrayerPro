@@ -1,7 +1,6 @@
 package com.example.prayerpro;
 
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -18,37 +17,36 @@ import java.util.List;
 
 public class HelloApplication extends Application {
     static ComboBox<String> SelectPrayer;
+    static ComboBox<String> SelectTheme;
     static TableView prayerlist;
+    static GridPane pane;
+
+
 
     public void start(Stage primaryStage) throws IOException {
-
-
         primaryStage.setTitle("PrayerPro");
-        primaryStage.setHeight(800);
-        primaryStage.setWidth(800);
-        primaryStage.setMinWidth(200);
-        primaryStage.setResizable(false);
-
+        primaryStage.setMinHeight(300);
         Label Prayerpro = new Label("Welcome to Prayer Pro");
-
-
         VBox dropdownlist = new VBox();
         SelectPrayer = new ComboBox<>();
-        Label citySelection = new Label("Choose a city");
         SelectPrayer.getItems().addAll("Montreal" , "Toronto", "New york");
         SelectPrayer.setValue("Montreal");
-        Button btn= new Button("Select a city");;
+        SelectPrayer.setMinWidth(100);
+        Button btn= new Button("Apply city setting");;
         btn.setOnAction(e -> userCityControl.refresh());
+        Button btnTheme= new Button("Apply theme setting");;
+        btnTheme.setOnAction(e -> userThemeControl.refresh());
+
         dropdownlist.getChildren().addAll(SelectPrayer);
 
 
-        HBox Checkbox = new HBox();
-        Label alertbox = new Label("Would you like to recieve daily notifications");
-        CheckBox allowNotification = new CheckBox("Yes");
-        CheckBox disallowNotification = new CheckBox("no");
-        Checkbox.setAlignment(Pos.TOP_LEFT);
-        Checkbox.getChildren().addAll(allowNotification, disallowNotification);
 
+        SelectTheme = new ComboBox<>();
+        SelectTheme.getItems().addAll("Light Theme" , "Dark Theme");
+        SelectTheme.setValue("Light Theme");
+        SelectTheme.setMinWidth(100);
+
+        // Wrapping a vbox around a table which contains the prayer times for a selected city
         VBox vbox = new VBox();
          prayerlist = new TableView<>();
 
@@ -66,6 +64,8 @@ public class HelloApplication extends Application {
         column2.setCellValueFactory(
                 new PropertyValueFactory<>("prayerTime"));
 
+        prayerlist.setMinWidth(350);
+        prayerlist.setMaxHeight(200);
 
         prayerlist.getColumns().add(column1);
         prayerlist.getColumns().add(column2);
@@ -73,25 +73,22 @@ public class HelloApplication extends Application {
         prayerlist.getItems().addAll(PrayerSyncService.dailyPrayers);
         vbox.getChildren().addAll(prayerlist);
 
-        GridPane grid= new GridPane();
-        grid.add(dropdownlist, 1, 0);
-        grid.add(btn,2,0);
-        grid.add(Checkbox, 4, 0);
-        grid.add(vbox, 2,1);
-        grid.add(citySelection,0 ,0);
-        grid.add(alertbox,3,0);
-
-        // Setting Padding
-        grid.setPadding(new Insets(10, 10, 10, 10));
+        pane = new GridPane();
+        pane.add(dropdownlist, 1, 0);
+        pane.add(btn,1,2);
+        pane.add(vbox, 1,1);
+        pane.add(SelectTheme, 2,3);
+        pane.add(btnTheme, 2,4);
 
         //Setting the vertical and horizontal gaps between the columns
-        grid.setVgap(5);
-        grid.setHgap(5);
+        pane.setVgap(5);
+        pane.setHgap(5);
 
         //Setting the Grid alignment
-        grid.setAlignment(Pos.CENTER);
+        pane.setAlignment(Pos.CENTER);
 
-        Scene scene= new Scene(grid);
+        Scene scene= new Scene(pane);
+        scene.getStylesheets().add("PrayerPro.css");
         primaryStage.setScene(scene);
         primaryStage.setTitle("Prayer Notification");
         primaryStage.show();
@@ -105,6 +102,26 @@ public class HelloApplication extends Application {
         return SelectPrayer != null ? SelectPrayer.getValue() : "Montreal"; // DEFAULT VALUE IS MONTREAL
     }
 
+    public static String getSelectedTheme(){
+        return SelectTheme != null ? SelectTheme.getValue() : "Light Theme"; // DEFAULT VALUE IS LIGHT
+    }
+
+    public static void applyLightTheme(){
+        pane.setStyle("-fx-background-color:#ffdead");
+    }
+
+    public static void applyDarkTheme(){
+        pane.setStyle("-fx-background-color:#404040");
+        pane.setOpacity(40);
+    }
+
+    /*public static String getSelectedTheme() {
+        return ColorPicker;
+    }
+
+     */
+
+
     public static  void updatePrayerTimingsTable(List<Prayer> newTimings){
         if(prayerlist != null){
             prayerlist.getItems().clear();
@@ -112,30 +129,8 @@ public class HelloApplication extends Application {
         }
     }
 
-    /*private static void populatePrayerTimingsUI(Stage primaryStage){
-        TableView tableView = new TableView();
 
-        TableColumn<Prayer, String> column1 =
-                new TableColumn<>("Prayer Name");
-
-        column1.setCellValueFactory(
-                new PropertyValueFactory<>("prayerName"));
-
-
-        TableColumn<Prayer, String> column2 =
-                new TableColumn<>("Prayer Time");
-
-        column2.setCellValueFactory(
-                new PropertyValueFactory<>("prayerTime"));
-
-
-        tableView.getColumns().add(column1);
-        tableView.getColumns().add(column2);
-
-        tableView.getItems().addAll(PrayerSyncService.dailyPrayers);
-
-
-    }*/
 
 
 }
+

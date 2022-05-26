@@ -4,18 +4,20 @@ import java.io.FileNotFoundException;
 import java.text.ParseException;
 
 public class userCityControl implements UIControl {
-
     public static void refresh(){
         setSetting();
         execute();
     }
 
+
     public static void setSetting(){
-        UserSettingManagement.setCity(
+        UserSettingManagement.currentPreference.setCity(
                 HelloApplication.getSelectedCity().replaceAll(" ", "")
         );
     }
 
+
+    // In this method we are trying to read the prayer files
     public static void execute(){
         try{
             PrayerSyncService.syncPrayersFromtextfile();
